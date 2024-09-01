@@ -46,6 +46,7 @@ studentsData = ref.get()
 start_time = None
 while True:
   markedbool = False
+  alreadyMarkedBool = False
   matchindex = -1
   success,frame = cap.read()
   frameS = cv2.resize(frame , (0,0) , None , 0.25 , 0.25 )
@@ -90,8 +91,11 @@ while True:
         ref = db.reference("Students")
         studentsData = ref.get()
         markedbool = True
+        alreadyMarkedBool =False
       else:
         print('not yet 15 seconds since the last attendance')  
+        alreadyMarkedBool = True
+        
       
     else:
       color = (0, 0, 255)  # red color in BGR format
@@ -106,19 +110,19 @@ while True:
   if  len(facesFromframeS) == 0:
     imgBackground[44:44 + 633 , 808:808 + 414] = imgsModesList[0]
   else:
-    imgBackground[44:44 + 633 , 808:808 + 414] = imgsModesList[1]
-
-    
-    
-  if (matchindex != -1):
-    imgBackground[170:170 + 220 , 905:905 + 220] = cv2.resize(imagesList[matchindex] , (220,220))
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['total_attendance']) , (850 , 120) , cv2.FONT_HERSHEY_COMPLEX , 1 , (255 , 255,255) , 2 )
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['name']) , (920 , 430) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
-    cv2.putText(imgBackground, str(studentIds[matchindex]) , (980 , 500) , cv2.FONT_HERSHEY_COMPLEX , 1 , (255 , 255,255) , 2 )
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['major']) , (980 , 560) , cv2.FONT_HERSHEY_COMPLEX , 0.5 , (255, 255,255) , 2 )
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['starting_year']) , (1100 , 620 ) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['year']) , (1010 , 620) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
-    cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['standing']) , (900 , 620) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
+    if alreadyMarkedBool:
+      imgBackground[44:44 + 633 , 808:808 + 414] = imgsModesList[3]
+    else:
+      imgBackground[44:44 + 633 , 808:808 + 414] = imgsModesList[1]
+      if (matchindex != -1):
+        imgBackground[170:170 + 220 , 905:905 + 220] = cv2.resize(imagesList[matchindex] , (220,220))
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['total_attendance']) , (850 , 120) , cv2.FONT_HERSHEY_COMPLEX , 1 , (255 , 255,255) , 2 )
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['name']) , (920 , 430) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
+        cv2.putText(imgBackground, str(studentIds[matchindex]) , (980 , 500) , cv2.FONT_HERSHEY_COMPLEX , 1 , (255 , 255,255) , 2 )
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['major']) , (980 , 560) , cv2.FONT_HERSHEY_COMPLEX , 0.5 , (255, 255,255) , 2 )
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['starting_year']) , (1100 , 620 ) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['year']) , (1010 , 620) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
+        cv2.putText(imgBackground, str(studentsData[studentIds[matchindex]]['standing']) , (900 , 620) , cv2.FONT_HERSHEY_COMPLEX , 1 , (0 , 0,0) , 2 )
 
   cv2.imshow("face attendance",imgBackground)
   cv2.waitKey(1)
